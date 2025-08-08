@@ -15,6 +15,11 @@ jobs:
         with:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::319103167202:role/GithubActionsS3
+      # ここにデバッグステップを追加
+      - name: Debug AWS credentials
+        run: |
+          aws sts get-caller-identity
+          aws s3 ls s3://my-test-bucket-4444-test/ || echo "バケットアクセスエラー"
       - name: Sync to S3
         run: |
           aws s3 sync docs/ s3://my-test-bucket-4444-test/test-assets/raw/ --delete
