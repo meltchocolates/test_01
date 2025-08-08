@@ -1,0 +1,20 @@
+# .github/workflows/sync-to-s3.yml
+name: Sync Docs to S3
+on:
+  push:
+    branches: [ "main" ]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ap-northeast-1
+          role-to-assume: arn:aws:iam::3191-0316-7202:role/GithubActionsS3
+      - name: Sync to S3
+        run: |
+          aws s3 sync docs/ s3://my-test-bucket-4444-test/test-assets/raw/ --delete
