@@ -16,9 +16,14 @@ jobs:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::319103167202:role/GithubActionsS3
       # ここにデバッグステップを追加
+      # デバッグステップをより詳細に
       - name: Debug AWS credentials
         run: |
+          echo "現在時刻: $(date)"
           aws sts get-caller-identity
+          echo "S3バケット一覧テスト:"
+          aws s3 ls || echo "S3リスト権限なし"
+          echo "特定バケットテスト:"
           aws s3 ls s3://my-test-bucket-4444-test/ || echo "バケットアクセスエラー"
       - name: Sync to S3
         run: |
