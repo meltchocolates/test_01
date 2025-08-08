@@ -14,7 +14,7 @@ jobs:
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: ap-northeast-1
-          role-to-assume: arn:aws:iam::3191-0316-7202:role/GithubActionsS3
+          role-to-assume: arn:aws:iam::319103167202:role/GithubActionsS3
       - name: Sync to S3
         run: |
           aws s3 sync docs/ s3://my-test-bucket-4444-test/test-assets/raw/ --delete
