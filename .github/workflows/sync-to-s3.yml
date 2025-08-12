@@ -34,7 +34,6 @@ jobs:
           aws-region: us-east-1
           role-to-assume: arn:aws:iam::319103167202:role/GithubActionsS3
       # ここにデバッグステップを追加
-      # デバッグステップをより詳細に
       - name: Debug AWS credentials
         run: |
           echo "現在時刻: $(date)"
