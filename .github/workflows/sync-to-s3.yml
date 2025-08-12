@@ -11,6 +11,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      # Python環境
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas openpyxl pyyyaml
+          
+      - name: Preprocess Excel to Markdown
+        run: | 
+          python tools/preprocess_excel_to_md.py --in-dir docs --out-dir out_md
+
+      # AWS認証
       - uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: us-east-1
@@ -28,3 +43,6 @@ jobs:
       - name: Sync to S3
         run: |
           aws s3 sync docs/ s3://my-test-bucket-4444-test/test-assets/raw/ --delete
+      - name: Sync normalized to S3
+        run: |
+          aws s3 sync out_md/ s3://my-test-bucket-4444-test/test-assets/normalized/ --delete
