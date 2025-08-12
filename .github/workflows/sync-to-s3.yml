@@ -3,14 +3,17 @@ name: Sync Docs to S3
 on:
   push:
     branches: [ "main" ]
+  workflow_dispatch:  # 手動実行も可能にする
 permissions:
   id-token: write
-  contents: read
+  contents: write  # write権限に変更（コミット用）
 jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+            token: ${{ secrets.GITHUB_TOKEN }}
 
       # Python環境
       - uses: actions/setup-python@v5
@@ -27,6 +30,19 @@ jobs:
       - name: Preprocess Excel to Markdown
         run: | 
           python tools/preprocess_excel_to_md.py --in-dir docs --out-dir out_md
+
+      # GitHubにMarkdownファイルをコミット
+      - name: Commit and push markdown files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add out_md/
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "Auto-generated markdown files from Excel [skip ci]"
+            git push
+          fi
 
       # AWS認証
       - uses: aws-actions/configure-aws-credentials@v4
